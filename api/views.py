@@ -8,10 +8,14 @@ from rest_framework.response import Response
 from .serializer import CitySerializer,CityWeatherSerializer
 from rest_framework.views import APIView
 from main.models import City, CityWeatherInfo
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
 class CityList(APIView):
+    authentication_classes = (TokenAuthentication,BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
     def get(self, request, format=None):
         cities = City.objects.all()
         serializer = CitySerializer(cities, many=True)
@@ -24,6 +28,8 @@ def city_list(request):
     return Response(serializer.data)
 
 class CityDetail(APIView):
+    authentication_classes = (TokenAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
     def post(self, request):
         city_name = request.data.get('city_name')
 
